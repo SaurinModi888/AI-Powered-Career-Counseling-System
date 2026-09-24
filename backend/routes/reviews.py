@@ -14,7 +14,7 @@ def get_reviews():
 @reviews_bp.route('', methods=['POST'])
 def submit_review():
     token = request.headers.get('Authorization', '')
-    data = request.get_json() or {}
+    data = request.get_json(silent=True) or {}
     
     user_id = data_from_token(token) or data.get('user_id')
     rating = data.get('rating')

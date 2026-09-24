@@ -74,7 +74,7 @@ def get_resources():
 @resources_bp.route('/save', methods=['POST'])
 def save_resource():
     token = request.headers.get('Authorization', '')
-    data = request.get_json() or {}
+    data = request.get_json(silent=True) or {}
     
     user_id = data_from_token(token) or data.get('user_id')
     resource_id = data.get('resource_id')
