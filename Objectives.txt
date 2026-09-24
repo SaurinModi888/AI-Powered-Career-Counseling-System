@@ -1,0 +1,98 @@
+ Objectives:
+
+The primary objectives of Pathfinder AI are:
+1. To Provide Personalized Career Guidance:
+To develop an AI-driven system that offers tailored career recommendations based on users’
+skills, interests, personality traits, and academic background.
+2. To Offer Comprehensive Career Assessment Tools:
+To implement skills and personality assessment modules that evaluate users' strengths and
+preferences to suggest suitable career paths.
+3. To Ensure a User-Friendly Experience and Accessibility:
+To design a modern, responsive interface that is intuitive, visually appealing, and easily
+accessible across various devices.
+4. To Enable Seamless Communication and Support:
+To integrate AI-powered chatbots and forums that facilitate user queries, discussions, and
+personalized assistance.
+5. To Provide Curated Educational Resources:
+To offer a repository of learning resources, including tutorials, articles, and courses, to help
+users enhance their skills and knowledge.
+
+Technologies:
+
+Frontend: ReactJS, TailwindCSS
+Backend: Flask 
+Database Management: MySQL
+
+Basic Modules:
+
+Basic Modules of PathFinder AI:
+
+The PathFinder AI system consists of several interconnected modules, each responsible for specific
+functionalities. These modules work together to provide a seamless career counseling experience.
+
+1. User Management Module
+Description: Manages user accounts, authentication, and profile settings.
+• Purpose: To handle user registration, authentication, and profile management.
+• Features:
+ User Registration (Sign Up).
+User Authentication (Login & Logout).
+
+2. Home Page Module
+Description: Serves as the central hub with links to all major sections.
+• Purpose: To provide users with an overview of all available sections and features.
+• Features:
+ Sections: Careers, Blogs, Resources, Reviews.
+Quick Access Buttons (e.g., Get Started, Explore Resources).
+User-Friendly Navigation.
+
+3. Personal Details Module
+Description: Collects basic personal information from users.
+• Purpose: To collect basic personal information from the user.
+• Features:
+o Form Inputs (Name, Age, Contact Information, etc.).
+o Data Validation and Storage.
+
+4. Educational Details Module
+Description: Gathers academic and skill-related data from users.
+• Purpose: To gather academic and skill-related information from the user.
+• Features:
+Form Inputs (Qualifications, Skills, Interests, etc.).
+Data Validation and Storage.
+
+5. Career Quiz Module
+Description: Evaluates users' skills and interests through a quiz.
+• Purpose: To evaluate the user's skills, interests, and preferences through a 16-question quiz.
+• Features:
+Dynamic Quiz Generation.
+Answer Submission and Data Collection.
+
+6. Recommendation Engine Module
+Description: Provides personalized career suggestions based on quiz data.
+• Purpose: To analyse quiz answers and provide personalized career recommendations.
+• Features:
+Machine Learning Algorithms for Prediction.
+Display of Recommended Careers with Details.
+
+7. Chatbot Module
+Description: Offers conversational assistance using a chatbot.
+• Purpose: To assist users with queries and guidance using the Gemini API-powered chatbot.
+• Features:
+Text-Based Interaction.
+Question-Answering Capabilities.
+Continuous Learning and Improvement.
+
+8. Resources Module
+Description: Provides educational resources for skill enhancement.
+• Purpose: To provide users with educational resources for skill enhancement.
+• Features:
+Resource Links (Coursera, Udemy, etc.).
+Categorization and Filtering.
+Bookmarking and Saving Resources.
+
+9. Review Module
+Description: Collects feedback from users for continuous improvement.
+• Purpose: To gather feedback and reviews from users about the system.
+• Features:
+Feedback Submission Form.
+Display of User Reviews.
+Review Management
