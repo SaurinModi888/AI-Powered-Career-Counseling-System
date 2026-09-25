@@ -1,0 +1,718 @@
+================================================================================
+          PATHFINDER AI - COMPLETE BACKEND API DOCUMENTATION (API.txt)
+================================================================================
+Base URL: http://localhost:5000 (Default development server)
+Authentication Format: Header 'Authorization: Bearer user_token_{user_id}' 
+                      OR Json payload field 'user_id' / Query param 'user_id'
+
+--------------------------------================--------------------------------
+TABLE OF CONTENTS:
+1. System & Health APIs
+   - GET /api/health
+   - GET /
+2. User Authentication APIs
+   - POST /api/auth/register
+   - POST /api/auth/login
+   - GET  /api/auth/me
+3. User Profile APIs
+   - GET  /api/profile
+   - PUT/POST /api/profile
+4. Career Quiz & Prediction APIs
+   - GET  /api/quiz/questions
+   - POST /api/quiz/submit
+5. Career Recommendation & Selection APIs
+   - GET  /api/career/predictions
+   - POST /api/career/select
+6. Gemini Chatbot & File Transcript APIs
+   - POST /api/chat/start
+   - POST /api/chat/message
+   - POST /api/chat/close
+   - GET  /api/chat/history
+7. Educational Resources APIs
+   - GET  /api/resources
+   - POST /api/resources/save
+   - GET  /api/resources/saved
+8. User Feedback & Reviews APIs
+   - GET  /api/reviews
+   - POST /api/reviews
+================================================================================
+
+
+--------------------------------------------------------------------------------
+1. SYSTEM & HEALTH APIS
+--------------------------------------------------------------------------------
+
+1.1 GET /api/health (or GET /)
+Description: Verifies server status, active database backend (MySQL/SQLite), and version info.
+HTTP Method: GET
+Exact Path: /api/health (or /)
+Path Parameters: None
+Query Parameters: None
+Request Headers: None required
+Request Body: None
+
+Response (200 OK):
+{
+  "database": "mysql",
+  "status": "online",
+  "system": "PathFinder AI Career Counseling Backend",
+  "version": "1.0.0"
+}
+Error Responses: None
+
+
+--------------------------------------------------------------------------------
+2. USER AUTHENTICATION APIS
+--------------------------------------------------------------------------------
+
+2.1 POST /api/auth/register
+Description: Registers a new user, creates their initial profile, and returns an authentication token.
+HTTP Method: POST
+Exact Path: /api/auth/register
+Path Parameters: None
+Query Parameters: None
+Request Headers: Content-Type: application/json
+
+Request Body:
+{
+  "email": "student@example.com",     // Required, string (unique)
+  "password": "Password123!",         // Required, string
+  "full_name": "Saurin Modi"          // Required, string
+}
+
+Response (201 Created):
+{
+  "message": "User registered successfully!",
+  "token": "user_token_1",
+  "user": {
+    "created_at": "2026-09-25T01:00:00",
+    "email": "student@example.com",
+    "full_name": "Saurin Modi",
+    "id": 1
+  }
+}
+
+Error Responses:
+- 400 Bad Request:
+  {"error": "Email, password, and full name are required."}
+- 400 Bad Request:
+  {"error": "An account with this email already exists."}
+
+
+2.2 POST /api/auth/login
+Description: Authenticates an existing user by email and password and returns a token.
+HTTP Method: POST
+Exact Path: /api/auth/login
+Path Parameters: None
+Query Parameters: None
+Request Headers: Content-Type: application/json
+
+Request Body:
+{
+  "email": "student@example.com",     // Required, string
+  "password": "Password123!"          // Required, string
+}
+
+Response (200 OK):
+{
+  "message": "Login successful!",
+  "token": "user_token_1",
+  "user": {
+    "created_at": "2026-09-25T01:00:00",
+    "email": "student@example.com",
+    "full_name": "Saurin Modi",
+    "id": 1
+  }
+}
+
+Error Responses:
+- 400 Bad Request:
+  {"error": "Email and password are required."}
+- 401 Unauthorized:
+  {"error": "Invalid email or password."}
+
+
+2.3 GET /api/auth/me
+Description: Fetches the currently authenticated user details along with their profile details.
+HTTP Method: GET
+Exact Path: /api/auth/me
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Required)
+
+Request Body: None
+
+Response (200 OK):
+{
+  "profile": {
+    "age": 22,
+    "certifications": "AWS Certified",
+    "cgpa_percentage": 85.0,
+    "city": "New York",
+    "education_level": "Bachelor's",
+    "id": 1,
+    "interests": "Machine Learning",
+    "phone": "+1234567890",
+    "skills": "Python, Data Analysis",
+    "specialization": "Computer Science",
+    "updated_at": "2026-09-25T01:00:00",
+    "user_id": 1
+  },
+  "user": {
+    "created_at": "2026-09-25T01:00:00",
+    "email": "student@example.com",
+    "full_name": "Saurin Modi",
+    "id": 1
+  }
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or invalid token."}
+- 404 Not Found:
+  {"error": "User not found."}
+
+
+--------------------------------------------------------------------------------
+3. USER PROFILE APIS
+--------------------------------------------------------------------------------
+
+3.1 GET /api/profile
+Description: Retrieves personal and educational details for the user.
+HTTP Method: GET
+Exact Path: /api/profile
+Path Parameters: None
+Query Parameters: 
+  - user_id (Optional integer if Authorization header is supplied)
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id query param is supplied)
+
+Request Body: None
+
+Response (200 OK):
+{
+  "profile": {
+    "age": 22,
+    "certifications": "AWS Certified",
+    "cgpa_percentage": 85.0,
+    "city": "New York",
+    "education_level": "Bachelor's",
+    "id": 1,
+    "interests": "Machine Learning",
+    "phone": "+1234567890",
+    "skills": "Python, Data Analysis",
+    "specialization": "Computer Science",
+    "updated_at": "2026-09-25T01:00:00",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+3.2 PUT/POST /api/profile
+Description: Updates personal and educational details for the user.
+HTTP Method: PUT or POST
+Exact Path: /api/profile
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,                          // Optional integer if Authorization header is set
+  "age": 22,                             // Optional integer
+  "phone": "+1234567890",                // Optional string
+  "city": "San Francisco",               // Optional string
+  "education_level": "Bachelor's",       // Optional string
+  "specialization": "Computer Science",  // Optional string
+  "skills": "Python, React, ML",         // Optional string
+  "certifications": "AWS Certified",     // Optional string
+  "cgpa_percentage": 88.5,               // Optional float/int
+  "interests": "AI & Web Dev"            // Optional string
+}
+
+Response (200 OK):
+{
+  "message": "Profile updated successfully!",
+  "profile": {
+    "age": 22,
+    "certifications": "AWS Certified",
+    "cgpa_percentage": 88.5,
+    "city": "San Francisco",
+    "education_level": "Bachelor's",
+    "id": 1,
+    "interests": "AI & Web Dev",
+    "phone": "+1234567890",
+    "skills": "Python, React, ML",
+    "specialization": "Computer Science",
+    "updated_at": "2026-09-25T01:00:00",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+--------------------------------------------------------------------------------
+4. CAREER QUIZ & PREDICTION APIS
+--------------------------------------------------------------------------------
+
+4.1 GET /api/quiz/questions
+Description: Returns the 16 structured assessment questions for career prediction.
+HTTP Method: GET
+Exact Path: /api/quiz/questions
+Path Parameters: None
+Query Parameters: None
+Request Headers: None required
+
+Request Body: None
+
+Response (200 OK):
+{
+  "total_questions": 16,
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is your highest completed or current level of education?",
+      "options": ["High School", "Intermediate", "Bachelor's", "Master's", "Ph.D."],
+      "field": "Education Level"
+    },
+    ...
+  ]
+}
+
+Error Responses: None
+
+
+4.2 POST /api/quiz/submit
+Description: Submits quiz answers, updates user profile, executes the ML Random Forest model, and returns 5 UNIQUE career predictions with confidence scores and details.
+HTTP Method: POST
+Exact Path: /api/quiz/submit
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,                     // Optional integer if Authorization header set
+  "answers": {                      // Required object
+    "Education Level": "Bachelor's",
+    "Specialization": "Computer Science",
+    "Skills": "Python, Data Analysis, Machine Learning",
+    "Certifications": "AWS Certified",
+    "CGPA/Percentage": 85.0
+  }
+}
+
+Response (201 Created):
+{
+  "message": "Quiz submitted and 5 predictions generated successfully!",
+  "prediction_id": 1,
+  "submission_id": 1,
+  "predictions": [
+    {
+      "career": "Software Engineer",
+      "description": "Design, build, test, and maintain software applications and systems.",
+      "key_skills": ["Data Structures", "Algorithms", "System Design", "Git", "Clean Code"],
+      "recommended_courses": ["CS50 Computer Science", "Full Stack Web Development"],
+      "score": 88.5
+    },
+    {
+      "career": "Data Scientist",
+      "description": "Analyze complex data to help organizations make data-driven decisions...",
+      "key_skills": ["Python", "SQL", "Statistics", "Machine Learning"],
+      "recommended_courses": ["Data Science Specialization"],
+      "score": 82.0
+    },
+    {
+      "career": "ML Engineer",
+      "description": "Build, deploy, and scale machine learning models into production systems.",
+      "key_skills": ["Python", "PyTorch/TensorFlow", "MLOps"],
+      "recommended_courses": ["Deep Learning Specialization"],
+      "score": 75.4
+    },
+    {
+      "career": "Cloud Architect",
+      "description": "Oversee enterprise cloud computing strategies...",
+      "key_skills": ["AWS/Azure/GCP", "Kubernetes/Docker"],
+      "recommended_courses": ["AWS Solutions Architect"],
+      "score": 68.0
+    },
+    {
+      "career": "Cybersecurity Analyst",
+      "description": "Protect an organization's computer networks...",
+      "key_skills": ["Network Security", "Ethical Hacking"],
+      "recommended_courses": ["CompTIA Security+"],
+      "score": 61.2
+    }
+  ]
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+--------------------------------------------------------------------------------
+5. CAREER RECOMMENDATION & SELECTION APIS
+--------------------------------------------------------------------------------
+
+5.1 GET /api/career/predictions
+Description: Fetches the latest 5 career predictions for the user.
+HTTP Method: GET
+Exact Path: /api/career/predictions
+Path Parameters: None
+Query Parameters: 
+  - user_id (Optional integer if Authorization header is set)
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id query param is supplied)
+
+Request Body: None
+
+Response (200 OK):
+{
+  "prediction": {
+    "created_at": "2026-09-25T01:00:00",
+    "id": 1,
+    "predictions": [ ... ],       // Array of 5 unique predictions
+    "selected_career": "Software Engineer",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+- 404 Not Found:
+  {"error": "No career predictions found for this user. Please take the quiz first."}
+
+
+5.2 POST /api/career/select
+Description: Saves the user's chosen career path out of the 5 recommendations and binds an active ChatSession with a .txt file reference in MySQL.
+HTTP Method: POST
+Exact Path: /api/career/select
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,                          // Optional integer if Authorization header set
+  "selected_career": "Software Engineer"  // Required string
+}
+
+Response (200 OK):
+{
+  "message": "Career path 'Software Engineer' selected successfully!",
+  "selected_career": "Software Engineer",
+  "chat_session": {
+    "created_at": "2026-09-25T01:00:00",
+    "id": 1,
+    "is_active": true,
+    "last_updated": "2026-09-25T01:00:00",
+    "selected_career": "Software Engineer",
+    "txt_file_path": "C:/.../chat_logs/chat_user_1_career_software_engineer.txt",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 400 Bad Request:
+  {"error": "User ID and selected_career are required."}
+
+
+--------------------------------------------------------------------------------
+6. GEMINI CHATBOT & FILE TRANSCRIPT APIS
+--------------------------------------------------------------------------------
+
+6.1 POST /api/chat/start
+Description: Starts or resumes a chat session. Reads the .txt transcript file referenced in the MySQL database to reload past context when a user logs back in.
+HTTP Method: POST
+Exact Path: /api/chat/start
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1                           // Optional integer if Authorization header set
+}
+
+Response (200 OK):
+{
+  "message": "Chat session started.",
+  "selected_career": "Software Engineer",
+  "past_transcript": "=== PathFinder AI Career Coaching Session Transcript ==...",
+  "txt_file_reference": "C:/.../chat_logs/chat_user_1_career_software_engineer.txt",
+  "chat_session": {
+    "created_at": "2026-09-25T01:00:00",
+    "id": 1,
+    "is_active": true,
+    "last_updated": "2026-09-25T01:00:00",
+    "selected_career": "Software Engineer",
+    "txt_file_path": "C:/.../chat_logs/chat_user_1_career_software_engineer.txt",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+6.2 POST /api/chat/message
+Description: Sends a message to the Gemini API using prior .txt file context and returns guidance tailored to the selected career path.
+HTTP Method: POST
+Exact Path: /api/chat/message
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,                                       // Optional integer if Authorization header set
+  "message": "What portfolio projects should I build?"// Required string
+}
+
+Response (200 OK):
+{
+  "response": "As your PathFinder AI mentor for Software Engineer, here is actionable guidance...",
+  "selected_career": "Software Engineer",
+  "timestamp": "2026-09-25 01:00:00"
+}
+
+Error Responses:
+- 400 Bad Request:
+  {"error": "User ID and message content are required."}
+
+
+6.3 POST /api/chat/close
+Description: Closes the active chat session, writes/updates the conversation transcript to the .txt file on disk, and updates the database record timestamp & file reference.
+HTTP Method: POST
+Exact Path: /api/chat/close
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,         // Optional integer if Authorization header set
+  "messages": [         // Optional array of message objects to save
+    { "role": "user", "content": "Hello", "timestamp": "2026-09-25 01:00:00" },
+    { "role": "assistant", "content": "Hi there!", "timestamp": "2026-09-25 01:00:01" }
+  ]
+}
+
+Response (200 OK):
+{
+  "message": "Chat closed successfully. Conversation saved to .txt file and DB reference updated.",
+  "txt_file_path": "C:/.../chat_logs/chat_user_1_career_software_engineer.txt",
+  "chat_session": {
+    "created_at": "2026-09-25T01:00:00",
+    "id": 1,
+    "is_active": false,
+    "last_updated": "2026-09-25T01:00:00",
+    "selected_career": "Software Engineer",
+    "txt_file_path": "C:/.../chat_logs/chat_user_1_career_software_engineer.txt",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+6.4 GET /api/chat/history
+Description: Fetches the raw text transcript file content referenced in the database for the user's active/last chat session.
+HTTP Method: GET
+Exact Path: /api/chat/history
+Path Parameters: None
+Query Parameters: 
+  - user_id (Optional integer if Authorization header is set)
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id query param set)
+
+Request Body: None
+
+Response (200 OK):
+{
+  "selected_career": "Software Engineer",
+  "transcript": "=== PathFinder AI Career Coaching Session Transcript ==...",
+  "txt_file_path": "C:/.../chat_logs/chat_user_1_career_software_engineer.txt"
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+--------------------------------------------------------------------------------
+7. EDUCATIONAL RESOURCES APIS
+--------------------------------------------------------------------------------
+
+7.1 GET /api/resources
+Description: Retrieves curated educational learning resources (Coursera, Udemy, etc.).
+HTTP Method: GET
+Exact Path: /api/resources
+Path Parameters: None
+Query Parameters:
+  - category (Optional string - e.g., "Courses")
+  - career   (Optional string - e.g., "Software Engineer")
+Request Headers: None required
+
+Request Body: None
+
+Response (200 OK):
+{
+  "resources": [
+    {
+      "career_tag": "Software Engineer",
+      "category": "Courses",
+      "description": "An introduction to the intellectual enterprises of computer science...",
+      "id": 1,
+      "provider": "Coursera / Harvard",
+      "title": "CS50's Introduction to Computer Science",
+      "url": "https://www.coursera.org/learn/cs50"
+    }
+  ]
+}
+
+Error Responses: None
+
+
+7.2 POST /api/resources/save
+Description: Bookmarks/saves an educational resource for a logged-in user in MySQL.
+HTTP Method: POST
+Exact Path: /api/resources/save
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,               // Optional integer if Authorization header set
+  "resource_id": 1            // Required integer
+}
+
+Response (200 OK / 201 Created):
+{
+  "message": "Resource saved successfully!",
+  "saved_resource": {
+    "id": 1,
+    "resource": {
+      "career_tag": "Software Engineer",
+      "category": "Courses",
+      "description": "An introduction to the intellectual enterprises...",
+      "id": 1,
+      "provider": "Coursera / Harvard",
+      "title": "CS50's Introduction to Computer Science",
+      "url": "https://www.coursera.org/learn/cs50"
+    },
+    "saved_at": "2026-09-25T01:00:00",
+    "user_id": 1
+  }
+}
+
+Error Responses:
+- 400 Bad Request:
+  {"error": "user_id and resource_id are required."}
+
+
+7.3 GET /api/resources/saved
+Description: Fetches all saved/bookmarked resources for the logged-in user.
+HTTP Method: GET
+Exact Path: /api/resources/saved
+Path Parameters: None
+Query Parameters: 
+  - user_id (Optional integer if Authorization header set)
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id query param set)
+
+Request Body: None
+
+Response (200 OK):
+{
+  "saved_resources": [
+    {
+      "id": 1,
+      "resource": { ... },
+      "saved_at": "2026-09-25T01:00:00",
+      "user_id": 1
+    }
+  ]
+}
+
+Error Responses:
+- 401 Unauthorized:
+  {"error": "Unauthorized or missing user_id."}
+
+
+--------------------------------------------------------------------------------
+8. USER FEEDBACK & REVIEWS APIS
+--------------------------------------------------------------------------------
+
+8.1 GET /api/reviews
+Description: Lists user ratings and feedback reviews.
+HTTP Method: GET
+Exact Path: /api/reviews
+Path Parameters: None
+Query Parameters: None
+Request Headers: None required
+
+Request Body: None
+
+Response (200 OK):
+{
+  "reviews": [
+    {
+      "comment": "Outstanding system!",
+      "created_at": "2026-09-25T01:00:00",
+      "id": 1,
+      "rating": 5,
+      "user_id": 1,
+      "user_name": "Saurin Modi"
+    }
+  ]
+}
+
+Error Responses: None
+
+
+8.2 POST /api/reviews
+Description: Submits feedback review and star rating (1-5) for the platform.
+HTTP Method: POST
+Exact Path: /api/reviews
+Path Parameters: None
+Query Parameters: None
+Request Headers: Authorization: Bearer user_token_{user_id} (Optional if user_id in request body)
+
+Request Body:
+{
+  "user_id": 1,                                       // Optional integer if Authorization header set
+  "rating": 5,                                        // Required integer (1 to 5)
+  "comment": "Great career counselor chatbot!"       // Required string
+}
+
+Response (201 Created):
+{
+  "message": "Thank you for your feedback!",
+  "review": {
+    "comment": "Great career counselor chatbot!",
+    "created_at": "2026-09-25T01:00:00",
+    "id": 1,
+    "rating": 5,
+    "user_id": 1,
+    "user_name": "Saurin Modi"
+  }
+}
+
+Error Responses:
+- 400 Bad Request:
+  {"error": "User ID, rating (1-5), and comment are required."}
+- 400 Bad Request:
+  {"error": "Rating must be between 1 and 5."}
+- 400 Bad Request:
+  {"error": "Rating must be an integer."}
+================================================================================
